@@ -10,8 +10,8 @@ chrome.tabs.query({}, function(tabs) {
 
 let links = document.getElementsByTagName('link');
 let canonical = '';
-
-console.log(chrome.browsingData);
+let title = document.getElementByTagName('h1');
+console.log(title);
 
 
 // for (var i = 0; i < links.length; i++) {
