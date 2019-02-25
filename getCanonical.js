@@ -8,10 +8,10 @@ chrome.tabs.query({}, function(tabs) {
   }
 });
 
-let links = document.getElementsByTagName('link');
-let canonical = '';
-let title = document.getElementByTagName('h1');
-console.log(title);
+//let links = document.getElementsByTagName('link');
+//let canonical = '';
+//let title = document.getElementByTagName('h1');
+//console.log(title);
 
 
 // for (var i = 0; i < links.length; i++) {
@@ -24,8 +24,13 @@ console.log(title);
 //console.log(canonical);
 
 
-//chrome.browserAction.onClicked.addListener(function(tab) {
-  //alert('hoge');
-  // var action_url = "javascript:window.print();";
-  // chrome.tabs.update(tab.id, {url: action_url});
-//});
+// chrome.browserAction.onClicked.addListener(function(tab) {
+//   alert(tab.url);
+//   // var action_url = "javascript:window.print();";
+//   // chrome.tabs.update(tab.id, {url: action_url});
+// });
+
+chrome.tabs.getSelected(null, function(tab) {
+  document.getElementById('title').innerHTML = tab.title;
+  document.getElementById('url').innerHTML = tab.url;
+});
