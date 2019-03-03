@@ -15,7 +15,6 @@
     document.getElementById('title').innerHTML = tab.title;
     document.getElementById('url').innerHTML = tab.url;
 
-
     var xhr = new XMLHttpRequest();
     xhr.responseType  = "document";
 
@@ -23,7 +22,11 @@
       var dom = e.target.responseXML;
       var links = dom.querySelectorAll('link');
       for (var index = 0; index < links.length; index++) {
-        console.log(links[index].outerHTML);
+        if(links[index].outerHTML.match(/canonical/)) {
+          var linksValue = links[index].outerHTML.split(/=| /);
+          linksValue = linksValue[2].replace(/"/g , '');
+          document.getElementById('canonical').innerHTML = linksValue;
+        }
       }
     };
 
