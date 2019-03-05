@@ -8,6 +8,11 @@
     "default_title": "terumit",
     "default_popup": "popup.html"
   },
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
   "content_scripts":[
     {
       "js":[
@@ -19,6 +24,9 @@
      "128": "icon.png"
   },
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "*://*/*/",
+    "webRequest",
+    "tabs"
   ]
 }

@@ -103,4 +103,9 @@
 
     xhr.open("get", tab.url);
     xhr.send();
+
+    // popupが開かれた時にbackground.jsに開かれたことを送信、コールバックでhtmlに差し込み
+    chrome.runtime.sendMessage('callBackground', function(response) {
+      document.getElementById('x-robots-tag').innerHTML = response.message;
+    });
   });
