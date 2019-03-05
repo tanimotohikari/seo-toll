@@ -17,7 +17,8 @@
     {
       "matches":["https://*/*","http://*/*"],
       "js":[
-        "script.js"
+        "script.js",
+        "jquery.min.js"
       ]
     }
   ],
