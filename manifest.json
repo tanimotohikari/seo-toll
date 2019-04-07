@@ -1,12 +1,13 @@
 {
   "manifest_version": 2,
-  "version": "0.5",
+  "version": "1.0",
   "name": "Research SEO",
-  "short_name": "terumit",
+  "short_name": "大和",
   "description": "SEOに関するタグを検知、参照するツール",
   "browser_action": {
-    "default_title": "terumit",
-    "default_popup": "popup.html"
+    "default_title": "大和",
+    "default_popup": "popup.html",
+    "default_icon" : "icon.png"
   },
   "background": {
     "scripts": [
@@ -17,8 +18,8 @@
     {
       "matches":["https://*/*","http://*/*"],
       "js":[
-        "script.js",
-        "jquery.min.js"
+       "jquery.min.js",
+       "script.js"
       ]
     }
   ],

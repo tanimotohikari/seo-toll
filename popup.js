@@ -1,128 +1,198 @@
 'use strict'
+$(function(){
 
-  var url = '';
+  var result = '';
 
-  // ▼タブの名前の一覧の取得
-  // chrome.tabs.query({}, function(tabs) {
-  //   let i;
-  //   for(i = 0; i < tabs.length; i++) {
-  //     //console.log(tabs[i]);
-  //   }
-  // });
-
-  //HTMLHeadingElement hタグの取得
-
-  //samuraiのrankingではエラーで動かない
-  function extractCanonical(array) {
-    for (var index = 0; index < array.length; index++) {
-      // 引数で渡された配列の中から canonical がrel属性に設定されているものを探す
-      if(array[index].outerHTML.match('canonical')) {
-        var html = array[index].outerHTML;
-        html = html.split(/ /);
-
-        // htmlからhrefの箇所を抜き出す
-        for (var index = 0; index < html.length; index++) {
-          if(html[index].match('href')) {
-            var value = html[index];
-          }
-        }
-
-        // 抜き出したhtmlの不要な部分を切り取る
-        var startQuotes = value.indexOf('"') + 1;
-        var endQuotes = value.indexOf('"', startQuotes + 1);
-        var canonical = value.substring(startQuotes, endQuotes);
-
-        document.getElementById('canonical').innerHTML = canonical;
-      }
-    }
+  function postYahoo(data) {
+    // var contents = data.toString();
+    // $.ajax({
+    //   url: "https://jlp.yahooapis.jp/KouseiService/V1/kousei",
+    //   type:'POST',
+    //   dataType:'xml',
+    //   ContentType: 'application/x-www-form-urlencoded',
+    //   ContentLength: contents.length,
+    //   crossDomain: true,
+    //   data: {
+    //     appid: '******************',
+    //     no_filter: '12',
+    //     sentence: contents
+    //   },
+    //   success:function(xml){
+    //     $(xml).find("Result").each(function() {
+    //       if ($(this).find('ShitekiWord').text()) {
+    //         $("#text").append(
+    //           '<ul class="layout-bottom-small">' +
+    //             '<li>先頭文字列から「' + $(this).find('StartPos').text() + '」文字目</li>' +
+    //             '<li>対象表記「' + $(this).find('Surface').text() + '」</li>' +
+    //             '<li>言い換え候補文字列「' + $(this).find('ShitekiWord').text() + '」</li>' +
+    //             '<li>指摘詳細「' + $(this).find('ShitekiInfo').text() + '」</li>' +
+    //           '</ul>'
+    //         );
+    //       }
+    //     });
+    //   },
+    //   error:function(xml) {
+    //     //console.log(xml);
+    //     //console.log(typeof xml);
+    //     //console.log(xml["responseText"]);
+    //     //console.log(typeof xml["responseText"]);
+    //     //alert("ロード失敗");
+    //   }
+    // })
   }
 
-  function extractDescription(array) {
-    for (var index = 0; index < array.length; index++) {
-      // 引数で渡された配列の中から description が属性に設定されているものを探す
-      if(array[index].outerHTML.match('"description"')) {
-        var html = array[index].outerHTML;
-        html = html.split(/ /);
+  // 取得するタブの条件
+  var queryInfo = {
+    active: true,
+    windowId: chrome.windows.WINDOW_ID_CURRENT
+  };
 
-        // htmlからhrefの箇所を抜き出す
-        for (var index = 0; index < html.length; index++) {
-          if(html[index].match('content')) {
-            var value = html[index];
-          }
-        }
-
-        // 抜き出したhtmlの不要な部分を切り取る
-        var startQuotes = value.indexOf('"') + 1;
-        var endQuotes = value.indexOf('"', startQuotes + 1);
-        var description = value.substring(startQuotes, endQuotes);
-
-        document.getElementById('description').innerHTML = description;
-      }
-    }
+  // 値が有無を判断する
+  function checkValue(selector) {
   }
 
-  chrome.tabs.getSelected(null, function(tab) {
-    document.getElementById('title').innerHTML = tab.title;
-    document.getElementById('url').innerHTML = tab.url;
+  // タブの情報を取得する
+  chrome.tabs.query(queryInfo, function (result) {
+    // 配列の先頭に現在タブの情報が入っている
+    var currentTab = result.shift();
 
-    var xhr = new XMLHttpRequest();
-    xhr.responseType  = "document";
+    $('#url').html(currentTab.url);
 
-    xhr.onload = function(e){
-      var dom = e.target.responseXML;
-      var head = dom.head;
-      var links = head.querySelectorAll('link');
-      extractCanonical(links);
+    chrome.tabs.sendMessage(currentTab.id, 'callContentScript', function(response) {
+      postYahoo(response.data.document);
 
-      var metas = head.querySelectorAll('meta');
-      extractDescription(metas);
+      // title
+      $('#title').html(response.data.title);
+      $('#title-count').html($('#title').text().length);
 
-      var noindex = false;
-      var nofollow = false;
-      for (var index = 0; index < metas.length; index++) {
-        if(metas[index].outerHTML.match(/noindex/)) {
-          noindex = true;
-        }
-        if(metas[index].outerHTML.match(/nofollow/)) {
-          nofollow = true;
-        }
-      }
-      document.getElementById('noindex').innerHTML = noindex;
-      document.getElementById('nofollow').innerHTML = nofollow;
-
-      for (var index = 0; index < links.length; index++) {
-        if(links[index].outerHTML.match(/next/)) {
-          noindex = true;
-        }
-        if(metas[index].outerHTML.match(/prev/)) {
-          nofollow = true;
-        }
+      // 文字数によって背景色を変更する 30~50以内ならok、それ以外は黄色
+      var titleCount = $('#title').text().length;
+      if(30 > titleCount || 50 < titleCount) {
+        $('#title').prev().addClass('is-note');
+        $('#title').addClass('is-note');
       }
 
-    };
+      // canonical
+      if(response.data.canonical) {
+        $('#canonical').html(response.data.canonical);
+        if (currentTab.url.match(response.data.canonical)) {
+          $('#canonical').prev().addClass('is-note');
+          $('#canonical').addClass('is-note');
+        } else {
+          $('#canonical').prev().addClass('is-warning');
+          $('#canonical').addClass('is-warning');
+        }
+        $('#canonical-state').text('担当者に確認してください。');
+      } else {
+        $('#canonical-state').text('問題ありません');
+      }
 
-    xhr.open("get", tab.url);
-    xhr.send();
+      // description
+      if(response.data.description) {
+        $('#description').html(response.data.description);
+        $('#description-count').html($('#description').text().length);
 
-    // popupが開かれた時にbackground.jsに開かれたことを送信、コールバックでhtmlに差し込み
-    chrome.runtime.sendMessage('callBackground', function(response) {
-      document.getElementById('x-robots-tag').innerHTML = response.message;
-    });
+        // 文字数によって背景色を変更する 70~120以内ならok、それ以外は黄色
+        if(70 > $('#description').text().length || 120 < $('#description').text().length) {
+          $('#description').prev().addClass('is-note');
+          $('#description').addClass('is-note');
+        }
+      } else {
+        $('#description').prev().addClass('is-warning');
+        $('#description').addClass('is-warning');
+        $('#description').text('値がありません。担当者に確認してください。');
+      }
 
-    // 取得するタブの条件
-    var queryInfo = {
-      active: true,
-      windowId: chrome.windows.WINDOW_ID_CURRENT
-    };
-  
-    // タブの情報を取得する
-    chrome.tabs.query(queryInfo, function (result) {
-      // 配列の先頭に現在タブの情報が入っている
-      var currentTab = result.shift();
+      // noindex,nofollow
+      if(response.data.robots) {
+        if((response.data.robots).match(/noindex/)) {
+          $('#noindex').html('記述あり');
+          $('#noindex-state').html('担当者に確認してください。');
+          $('#noindex').prev().addClass('is-warning');
+          $('#noindex').addClass('is-warning');
+        } else {
+          $('#noindex').html('記述なし');
+          $('#noindex-state').text('問題ありません');
+        }
 
-      chrome.tabs.sendMessage(currentTab.id, 'callContentScript', function(response) {
-        console.log(response.message);
-        $('#aaa').text(response.message);
-      });
-    });
+        if((response.data.robots).match(/nofollow/)) {
+          $('#nofollow').html('記述あり');
+          $('#nofollow-state').html('担当者に確認してください。');
+          $('#nofollow').prev().addClass('is-warning');
+          $('#nofollow').addClass('is-warning');
+        } else {
+          $('#nofollow').html('記述なし');
+          $('#nofollow-state').text('問題ありません');
+        }
+      } else {
+        $('#noindex').html('記述なし');
+        $('#nofollow').html('記述なし');
+        $('#noindex-state').text('問題ありません');
+        $('#nofollow-state').text('問題ありません');
+      }
+
+      // next. prevタグ
+      if (response.data.next) {
+        $('#next').html(response.data.next);
+        $('#next-state').html('値が表示されている場合削除してください。');
+        $('#next').prev().addClass('is-note');
+        $('#next').addClass('is-note');
+      } else {
+        $('#next').html('記述なし');
+        $('#next-state').html('問題ありません');
+      }
+
+      if (response.data.prev) {
+        $('#prev').html(response.data.prev);
+        $('#prev-state').html('値が表示されている場合削除してください。');
+        $('#prev').prev().addClass('is-note');
+        $('#prev').addClass('is-note');
+      } else {
+        $('#prev').html('記述なし');
+        $('#prev-state').html('問題ありません');
+      }
+
+
+      // hタグ
+      $('#head-01').html(response.data.h1);
+
+      for (var i = 0; i < response.data.h2.length; i++) {
+        $('#head-02').append('<li>' + response.data.h2[i] + '</li>');
+      }
+
+      for (var i = 0; i < response.data.h3.length; i++) {
+        $('#head-03').append('<li>' + response.data.h3[i] + '</li>');
+      }
+
+      for (var i = 0; i < response.data.h4.length; i++) {
+        $('#head-04').append('<li>' + response.data.h4[i] + '</li>');
+      }
+    })
+  })
+
+  // popupが開かれた時にbackground.jsに開かれたことを送信、コールバックでhtmlに差し込み
+  chrome.runtime.sendMessage('callBackground', function(response) {
+    if (response.url != $('#url').text()) {
+      $('#x-robots-tag').prev().addClass('is-warning');
+      $('#x-robots-tag').addClass('is-warning');
+      $('#xRobotsTag-state').text('更新してください');
+    } else {
+      $('#x-robots-tag').html(response.message);
+      // x-robots-tagの値があった場合
+      if (response.message) {
+        $('#x-robots-tag').prev().addClass('is-warning');
+        $('#x-robots-tag').addClass('is-warning');
+        $('#xRobotsTag-state').text('担当者に確認してください。');
+      }
+    }
+  })
+
+  //tabの制御
+  $('.tab-label').on('click', function(){
+    var currentTab = $(this).index();
+    $(".tab-label").removeClass("active");
+    $(".panel").removeClass("active");
+    $(this).addClass("active");
+    $(".panel").eq(currentTab).addClass("active");
   });
+});

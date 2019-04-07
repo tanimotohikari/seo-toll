@@ -1,41 +1,70 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang='ja'>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <meta http-equiv='X-UA-Compatible' content='ie=edge'>
   <title>Research SEO</title>
-  <script src="popup.js" type="text/javascript"></script>
-  <script src="jquery.min.js" type="text/javascript"></script>
-  <style>
-    .content {
-      width: 500px;
-    }
-    .label {
-      background-color: #ccc;
-      border: 1px solid #aaa;
-      padding: 2px;
-    }
-  </style>
+  <script src='jquery.min.js' type='text/javascript'></script>
+  <script src='popup.js' type='text/javascript'></script>
+  <link rel='stylesheet' href='style.css'>
 </head>
 <body>
-  <div class='content'>
-    <p class='label'>canonical</p>
-    <p id='canonical'></p>
-    <p class='label'>title</p>
-    <p id='title'></p>
-    <p class='label'>URL</p>
-    <p id='url'></p>
-    <p class='label'>description</p>
-    <p id='description'></p>
-    <p class='label'>noindex</p>
-    <p id='noindex'></p>
-    <p class='label'>nofollow</p>
-    <p id='nofollow'></p>
-    <p class='label'>x-robots-tag</p>
-    <p id="x-robots-tag"></p>
-    <p class='label'>aaa</p>
-    <p id="aaa"></p>
+  <header class='header'>
+    <img class='header-icon' src='/images/header-icon.png' alt=''>
+    <div class='tab'>
+      <label class='tab-label active'>SEO関連</label>
+      <label class='tab-label'>文書校正</label>
+      <label class='tab-label'>hタグ</label>
+      <label class='tab-label'>ご意見</label>
+    </div>
+  </header>
+  <div class='panel-area'>
+    <div class='panel active'>
+      <div class='panel-inner'>
+        <p class='heading'>title：<span id='title-count'></span>文字</p>
+        <p id='title'></p>
+        <p class='heading'>URL</p>
+        <p id='url'></p>
+        <p class='heading'>canonical：<span id='canonical-state'></span></p>
+        <p id='canonical'></p>
+        <p class='heading'>description：<span id='description-count'></span>文字</p>
+        <p id='description'></p>
+        <p class='heading'>x-robots-tag：<span id='xRobotsTag-state'></span></p>
+        <p id='x-robots-tag'></p>
+        <p class='heading'>noindex：<span id='noindex-state'></span></p>
+        <p id='noindex'></p>
+        <p class='heading'>nofollow：<span id='nofollow-state'></span></p>
+        <p id='nofollow'></p>
+        <p class='heading'>next：<span id='next-state'></span></p>
+        <p id='next'></p>
+        <p class='heading'>prev：<span id='prev-state'></span></p>
+        <p id='prev'></p>
+      </div>
+    </div>
+    <div class='panel'>
+      <div id='text' class='panel-inner'>
+      </div>
+    </div>
+    <div class='panel'>
+      <div class='panel-inner'>
+        <p class='heading'>h1-tag</p>
+        <p id='head-01'></p>
+        <p class='heading'>h2-tag</p>
+        <ul id='head-02'></ul>
+        <p class='heading'>h3-tag</p>
+        <ul id='head-03'></ul>
+        <p class='heading'>h4-tag</p>
+        <ul id='head-04'></ul>
+      </div>
+    </div>
+    <div class='panel'>
+      <div class='panel-inner'>
+        <p>ご意見・ご要望はこちらから</p>
+        <p><a href='https://docs.google.com/spreadsheets/d/1L7n_IHTUTw5vmxobMeJHSvu2GR8Bu3H8Y61XsTEXO3A/edit#gid=0' target='_blank'>スプレットシート</a></p>
+      </div>
+    </div>
   </div>
+
 </body>
 </html>
