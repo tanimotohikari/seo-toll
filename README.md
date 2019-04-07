@@ -26,8 +26,13 @@ yahooの文書校正APIを使用しているため説明は割愛します。
 DOMの中からh1~h4のタグを取得してきている。
 
 ## Googleの拡張ツールは誰でも作れる
+
+拡張機能を管理しているページに遷移したい時
+chrome://extensions/
+[拡張ツール管理画面](chrome://extensions/)
+
 はじめに登録料は取られるけど誰でも簡単にUPできる
-[管理画面](https://chrome.google.com/webstore/developer/dashboard?authuser=0&hl=ja&pli=1)
+[Chromeストア管理画面](https://chrome.google.com/webstore/developer/dashboard?authuser=0&hl=ja&pli=1)
 UPの仕方はzipに圧縮してアップロードするだけなので簡単。
 
 ## 困ったこと
