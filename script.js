@@ -1,9 +1,11 @@
-
 function getDoms() {
   var title = $('title').text();
   var description = $('meta[name="description"]').attr('content');
   var canonical = $('link[rel="canonical"]').attr('href');
   var html = document.body.innerText;
+  var htmlDom = document.body.innerHTML;
+  var htmlTags = [];
+  var pattern = /h[1-6]>*?/;
   var h1 = $('h1').text();
   var h2Strings = [];
   var h2Length = $('h2').length;
@@ -11,8 +13,8 @@ function getDoms() {
   var h3Length = $('h3').length;
   var h4Strings = [];
   var h4Length = $('h4').length;
-  var next = $('link[rel="next"]').attr('href');;
-  var prev = $('link[rel="prev"]').attr('href');;
+  var next = $('link[rel="next"]').attr('href');
+  var prev = $('link[rel="prev"]').attr('href');
   var robots = $('meta[name="robots"]').attr('content');
 
   // hタグのテキストを配列に格納する

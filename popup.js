@@ -3,7 +3,8 @@ $(function(){
 
   var result = '';
 
-  function postYahoo(data) {
+  // 文書校正APIに対して通信を行うところ
+  //function postYahoo(data) {
     // var contents = data.toString();
     // $.ajax({
     //   url: "https://jlp.yahooapis.jp/KouseiService/V1/kousei",
@@ -17,6 +18,7 @@ $(function(){
     //     no_filter: '12',
     //     sentence: contents
     //   },
+    //   TODO：thenで書き換える
     //   success:function(xml){
     //     $(xml).find("Result").each(function() {
     //       if ($(this).find('ShitekiWord').text()) {
@@ -39,7 +41,7 @@ $(function(){
     //     //alert("ロード失敗");
     //   }
     // })
-  }
+  //}
 
   // 取得するタブの条件
   var queryInfo = {
@@ -59,7 +61,7 @@ $(function(){
     $('#url').html(currentTab.url);
 
     chrome.tabs.sendMessage(currentTab.id, 'callContentScript', function(response) {
-      postYahoo(response.data.document);
+      // postYahoo(response.data.document);
 
       // title
       $('#title').html(response.data.title);
