@@ -159,15 +159,18 @@ $(function(){
       $('#head-01').html(response.data.h1);
 
       for (var i = 0; i < response.data.h2.length; i++) {
-        $('#head-02').append('<li>' + response.data.h2[i] + '</li>');
+        var listItem = response.data.h2[i];
+        $('#head-02').append(`<li>${ listItem }</li>`);
       }
 
       for (var i = 0; i < response.data.h3.length; i++) {
-        $('#head-03').append('<li>' + response.data.h3[i] + '</li>');
+        var listItem = response.data.h3[i];
+        $('#head-03').append(`<li>${ listItem }</li>`);
       }
 
       for (var i = 0; i < response.data.h4.length; i++) {
-        $('#head-04').append('<li>' + response.data.h4[i] + '</li>');
+        var listItem = response.data.h4[i];
+        $('#head-04').append(`<li>${ listItem }</li>`);
       }
     })
   })
